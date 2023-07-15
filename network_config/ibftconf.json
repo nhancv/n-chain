@@ -1,0 +1,40 @@
+{
+  "genesis": {
+    "config": {
+      "chainId": CHAIN_ID,
+      "berlinBlock": 0,
+      "contractSizeLimit": 2147483647,
+      "londonBlock": 0,
+      "zeroBaseFee": false,
+      "ibft2": {
+        "blockperiodseconds": 1,
+        "epochlength": 30000,
+        "requesttimeoutseconds": 3
+      }
+    },
+    "difficulty": "1",
+    "gasLimit": "30000000",
+    "coinbase": "0x0000000000000000000000000000000000000000",
+    "alloc": {
+      "FUND_HOLDER_1_WITHOUT_0x_PREFIX": {
+        "balance": "9000000000000000000000000000"
+      },
+      "FUND_HOLDER_2_WITHOUT_0x_PREFIX": {
+        "balance": "9000000000000000000000000000"
+      },
+      "FUND_HOLDER_3_WITHOUT_0x_PREFIX": {
+        "balance": "9000000000000000000000000000"
+      }
+    }
+  },
+  "blockchain": {
+    "nodes": {
+      "generate": true,
+      "count": 4
+    }
+  },
+  "engine": {
+    "cryptofinType": "CHAIN_NAME",
+    "cryptofinSymbol": "CHAIN_SYMBOL"
+  }
+}

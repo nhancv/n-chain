@@ -1,0 +1,22 @@
+
+# Network
+bootnodes=["enode://NODE_1_KEY_PUB@1.node.nhancv.com:30303","enode://NODE_2_KEY_PUB@2.node.nhancv.com:30303","enode://NODE_3_KEY_PUB@3.node.nhancv.com:30303","enode://NODE_4_KEY_PUB@4.node.nhancv.com:30303"]
+Xdns-enabled=true
+Xdns-update-enabled=true
+permissions-nodes-config-file-enabled=false
+
+# Chain
+genesis-file="./genesis.json"
+data-path="data"
+
+# Others
+p2p-enabled=true
+p2p-host="0.0.0.0"
+p2p-port=30303
+
+rpc-http-enabled=true
+rpc-http-api=["ETH","NET","IBFT"]
+rpc-http-cors-origins=["all"]
+rpc-http-host="0.0.0.0"
+rpc-http-port=8545
+host-allowlist=["*"]

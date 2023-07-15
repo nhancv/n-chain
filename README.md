@@ -2,6 +2,8 @@
 
 Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal to AWS Cloud via Terraform
 
+![route53](./arch/aws_arch.png)
+
 ## Network configuration
 - Ethereum Client: Besu
 - Ethereum Stats: Ethstats

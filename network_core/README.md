@@ -80,16 +80,18 @@ KEY_NAME=testnet-nchaincore-project && ssh-keygen -t rsa -f key_pairs/$KEY_NAME 
 
 ### Create network config on your local
 
-- Install besu cli to your device
-  first: https://besu.hyperledger.org/stable/public-networks/get-started/install/binary-distribution
-
+- Install `besu` cli to your device first: https://besu.hyperledger.org/development/private-networks/get-started/install/binary-distribution
 ```
 # On MAC
+- Install Java JDK 21+: https://www.oracle.com/java/technologies/downloads/
+- Download besu from https://github.com/hyperledger/besu/releases/tag/24.3.3
+- Or install latest besu via brew:
 brew tap hyperledger/besu
 brew install hyperledger/besu/besu
 
 # On Linux
-BESU_VERSION=23.4.1 && \
+- Install Java JDK 17+: https://www.oracle.com/java/technologies/downloads/
+BESU_VERSION=24.3.3 && \
 BESU_DIR=besu-${BESU_VERSION} && \
 wget https://hyperledger.jfrog.io/hyperledger/besu-binaries/besu/${BESU_VERSION}/besu-${BESU_VERSION}.tar.gz && \
 sudo tar xvzf ${BESU_DIR}.tar.gz && \
@@ -99,10 +101,15 @@ cd ${BESU_DIR} && sudo ln -s $(pwd)/bin/besu /usr/bin/besu
 besu --version
 ```
 
-- Generate genesis file on local, keep all files safe:
+- Generate genesis config files on local, keep all files safe:
+    + Update `network_config/ibftconf.json` file:
+        + Check Existing Chain IDs: chainlist.org or the https://chainid.network list to see which chain IDs are already used. Example: `1584821`
+        + Update `CHAIN_ID`, `CHAIN_NAME`, `CHAIN_SYMBOL` `FUND_HOLDER_x` in `ibftconf.json` file
+        + Example `FUND_HOLDER_x`: `0373F5b03cE080EA25FB719ABb35bBc098c4f517`. This is the wallet will be used to hold
+          chain tokens. You can use any wallet address you want. But make sure you have the private key of that wallet.
+    + Run command to generate blockchain config files:
 
 ```
-# At directory contain ibftconf.json file
 besu operator generate-blockchain-config --config-file=ibftconf.json --to=networkFiles --private-key-file-name=key
 
 Ouput:
@@ -116,39 +123,35 @@ networkFiles/
     ├── wallet-node-3
     ├── wallet-node-4
 ```
+**NOTE**: You DO NOT change the config of `genesis.json` file directly because the `extraData` will not be correct, and the node cannot sync with the network.
 
-- Prepare network config file:
-    + Update `network_config/ibftconf.json` file:
-        + Update `CHAIN_ID`, `CHAIN_NAME`, `CHAIN_SYMBOL` `FUND_HOLDER_x` in `ibftconf.json` file
-        + Example `FUND_HOLDER_x`: `0373F5b03cE080EA25FB719ABb35bBc098c4f517`. This is the wallet will be used to hold
-          chain tokens. You can use any wallet address you want. But make sure you have the private key of that wallet.
-    + Update `network_config/nodeconf.toml` file:
-        + Correct enode address. The public node id the node public key, excluding the initial `0x`
-        + Example `NODE_1_KEY_PUB`: https://besu.hyperledger.org/stable/public-networks/concepts/node-keys#enode-url
+- Update `network_config/nodeconf.toml` file: https://besu.hyperledger.org/stable/public-networks/concepts/node-keys#enode-url
+    + Once the `networkFiles` folder is generated, you can find the public key of each node in the `networkFiles/keys/[wallet-node-1]/key.pub`.
+    + Copy it without the initial `0x` and update to `NODE_1_KEY_PUB` in the `nodeconf.toml` file.
+    + Do the same for the other nodes.
 
-- Upload some config files in `network_config` folder to AWS Secrets Manager as Plaintext:
-    - `networkFiles/genesis.json` file to AWS with name `testnet-nchaincore-genesis`
-    - `networkFiles/nodeconf.toml` file to AWS with name `testnet-nchaincore-nodeconf`
-    - encrypt(`networkFiles/[wallet-node-1]/key`) file to AWS with name `testnet-nchaincore-node1-key`
-    - encrypt(`networkFiles/[wallet-node-2]/key`) file to AWS with name `testnet-nchaincore-node2-key`
-    - encrypt(`networkFiles/[wallet-node-3]/key`) file to AWS with name `testnet-nchaincore-node3-key`
-    - encrypt(`networkFiles/[wallet-node-4]/key`) file to AWS with name `testnet-nchaincore-node4-key`
+- Upload some config files in `network_config/` folder to `AWS Secrets Manager` as `Plaintext`:
+    + `nodeconf.toml` file to AWS with name `testnet-nchaincore-nodeconf`
+    + `networkFiles/genesis.json` file to AWS with name `testnet-nchaincore-genesis`
+    + encrypt(`networkFiles/[wallet-node-1]/key`) file to AWS with name `testnet-nchaincore-node1-key`
+    + encrypt(`networkFiles/[wallet-node-2]/key`) file to AWS with name `testnet-nchaincore-node2-key`
+    + encrypt(`networkFiles/[wallet-node-3]/key`) file to AWS with name `testnet-nchaincore-node3-key`
+    + encrypt(`networkFiles/[wallet-node-4]/key`) file to AWS with name `testnet-nchaincore-node4-key`
 
-**NOTE**: Use this tool (https://dapp.nhancv.com/aes) to encrypt the wallet key before upload content to AWS. The
-encrypt key will be uploaded to Terraform Cloud variable.
+**NOTE**: Use this tool (https://dapp.nhancv.com/aes) to encrypt the wallet key before upload content to AWS. The encrypt key will be uploaded to Terraform Cloud variable as `encrypt_key` below. Use this tool to generate the key https://passwordsgenerator.net (remove symbols, suggest length 50)
 
 ### Deploy
 
-- Review and update local Terraform variables in `env.tf` file:
+- Review and update local Terraform variables in `variables.tf` file:
     + env=testnet
     + project=nchaincore
 - Config Terraform variables on Terraform cloud:
-    + AWS_ACCESS_KEY (sensitive) -> From `aws-tf-nchain` IAM user
+    + AWS_ACCESS_KEY -> From `aws-tf-nchain` IAM user
     + AWS_SECRET_KEY (sensitive) -> From `aws-tf-nchain` IAM user
-    + public_key_pair_bastion (sensitive) = content of `key_pairs/testnet-nchaincore-bastion.pub` file
-    + public_key_pair_project (sensitive) = content of `key_pairs/testnet-nchaincore-project.pub` file
-    + ethstats_secret (sensitive)
-    + encrypt_key (sensitive)
+    + public_key_pair_bastion = content of `key_pairs/testnet-nchaincore-bastion.pub` file
+    + public_key_pair_project = content of `key_pairs/testnet-nchaincore-project.pub` file
+    + ethstats_secret (sensitive) => 'SECRET' from [README.md](../network_tools/README.md)
+    + encrypt_key (sensitive) => Wallet encryption key will be used to decrypt all wallet's validator nodes
     + domain_zone_id = From AWS Console -> Route53 -> Selected domain -> Copy `Hosted zone ID`
     + domain_rpc = `rpc.nhancv.com`
     + domain_nodes = `HCL ["1.node.nhancv.com", "2.node.nhancv.com", "3.node.nhancv.com", "4.node.nhancv.com"]`
@@ -183,6 +186,9 @@ wget --spider localhost:8545
 ```
 Get latest block number:
 curl -X POST --data '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest", false],"id":1}' https://rpc.nhancv.com
+
+Get total peers:
+curl -X POST --data '{"jsonrpc":"2.0","method":"net_peerCount","params":[],"id":1}' https://rpc.nhancv.com
 
 Get total validators addresses:
 curl -X POST --data '{"jsonrpc":"2.0","method":"ibft_getValidatorsByBlockNumber","params":["latest"], "id":1}' https://rpc.nhancv.com

@@ -10,10 +10,10 @@ Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal t
 - Ethereum Explorer: Ethernal
 - Concensus: IBFT2.0
 - Deploy environment: AWS Cloud via Terraform
-- Gas price: 1000 Wei (0.000001 GWei)
+- Gas price: 1000 Wei (0.000001 GWei) (default)
 - Gas limit: 30M
 - Ethereum client: besu
-- Block time: 1s
+- Block time: 1s (minimum)
 - Block size: ~0.6KB
 
 ### Hardware recommendation
@@ -25,7 +25,7 @@ Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal t
 
 ## Requirements
 
-- AWS account
+- AWS account. Increase the limit of EC2 instances to 32 at http://aws.amazon.com/contact-us/ec2-request
 - Domain: Namecheap -> Point DNS Nameservers to AWS Route 53. Ex: `nhancv.com`
 - Terraform account
 

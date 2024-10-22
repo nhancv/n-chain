@@ -16,7 +16,7 @@ ulimit -S -n 64000
 apt -y install libjemalloc-dev
 
 # Install Besu
-export BESU_VERSION=23.4.1
+export BESU_VERSION=24.3.3
 export BESU_DIR=besu-$BESU_VERSION
 wget https://hyperledger.jfrog.io/hyperledger/besu-binaries/besu/$BESU_VERSION/besu-$BESU_VERSION.tar.gz
 sudo tar xvzf $BESU_DIR.tar.gz

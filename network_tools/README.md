@@ -29,6 +29,7 @@ KEY_NAME=testnet-nchaintools-project && ssh-keygen -t rsa -f key_pairs/$KEY_NAME
 ```
 
 - Login to AWS console:
+    + Skip this step if you already have `aws-tf-nchain` IAM user from `network_core`
     + IAM -> Create new `CLI` IAM User:
         + Name: `aws-tf-nchain`
         + Policies:
@@ -85,7 +86,7 @@ KEY_NAME=testnet-nchaintools-project && ssh-keygen -t rsa -f key_pairs/$KEY_NAME
         + ENCRYPTION_JWT_SECRET should be a 63 characters hex string
         + SECRET can be any random 64 characters hex string
         + VUE_APP_MAIN_DOMAIN: Your explorer domain
-        + BULLBOARD_USERNAME and BULLBOARD_PASSWORD: The account accesses to `/bull` admin page
+        + BULLBOARD_USERNAME and BULLBOARD_PASSWORD: The account accesses to `/bull` admin page. Gen password via this tool https://passwordsgenerator.net
     + Update `network_config/ethernal_index.js` file:
         + Update to your value: EXPLORER_DOMAIN, EXPLORER_SLUG, RPC_SERVER, NETWORK_ID, NETWORK_TOKEN, SECRET
 
@@ -95,18 +96,18 @@ KEY_NAME=testnet-nchaintools-project && ssh-keygen -t rsa -f key_pairs/$KEY_NAME
 
 ### Deploy
 
-- Review and update local Terraform variables in `env.tf` file:
+- Review and update local Terraform variables in `variables.tf` file:
     + env=testnet
     + project=nchaintools
 - Config Terraform variables on Terraform cloud:
-    + AWS_ACCESS_KEY (sensitive) -> From `aws-tf-nchain` IAM user
+    + AWS_ACCESS_KEY -> From `aws-tf-nchain` IAM user
     + AWS_SECRET_KEY (sensitive) -> From `aws-tf-nchain` IAM user
-    + public_key_pair_bastion (sensitive) = content of `key_pairs/testnet-nchaintools-bastion.pub` file
-    + public_key_pair_project (sensitive) = content of `key_pairs/testnet-nchaintools-project.pub` file
+    + public_key_pair_bastion = content of `key_pairs/testnet-nchaintools-bastion.pub` file
+    + public_key_pair_project = content of `key_pairs/testnet-nchaintools-project.pub` file
     + domain_zone_id = From AWS Console -> Route53 -> Selected domain -> Copy `Hosted zone ID`
     + domain_explore = `scan.nhancv.com`
-    + ethernal_username = `me@nhancv.com`
-    + ethernal_password (sensitive) = `secret`
+    + ethernal_user = `me@nhancv.com`
+    + ethernal_password (sensitive) = `your password`
 
 - Deploy architecture to aws
 

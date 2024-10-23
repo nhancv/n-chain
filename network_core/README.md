@@ -150,7 +150,7 @@ networkFiles/
     + AWS_SECRET_KEY (sensitive) -> From `aws-tf-nchain` IAM user
     + public_key_pair_bastion = content of `key_pairs/testnet-nchaincore-bastion.pub` file
     + public_key_pair_project = content of `key_pairs/testnet-nchaincore-project.pub` file
-    + ethstats_secret (sensitive) => 'SECRET' from [README.md](../network_tools/README.md)
+    + ethstats_secret (sensitive) => random 64 characters hex string https://codebeautify.org/generate-random-hexadecimal-numbers
     + encrypt_key (sensitive) => Wallet encryption key will be used to decrypt all wallet's validator nodes
     + domain_zone_id = From AWS Console -> Route53 -> Selected domain -> Copy `Hosted zone ID`
     + domain_rpc = `rpc.nhancv.com`

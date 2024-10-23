@@ -40,7 +40,7 @@ git clone https://github.com/goerli/ethstats-server.git
 cd ethstats-server
 npm install
 grunt poa
-WS_SECRET="${ETHSTATS_SECRET}" pm2 --name ethstats-server start npm -- run start
+WS_SECRET="${ETHSTATS_SECRET}" pm2 --name ethstats-server start npm -- run start --cron-restart "0 * * * *"
 
 
 ## PM2 auto start

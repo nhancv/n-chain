@@ -108,6 +108,9 @@ KEY_NAME=testnet-nchaintools-project && ssh-keygen -t rsa -f key_pairs/$KEY_NAME
     + domain_explore = `scan.nhancv.com`
     + ethernal_user = `me@nhancv.com`
     + ethernal_password (sensitive) = `your password`
+    + domain_blockscout = `blockscout.nhancv.com`
+    + blockscout_rpc = `https://rpc.nhancv.com`
+    + blockscout_chainid = `1584821`
 
 - Deploy architecture to aws
 

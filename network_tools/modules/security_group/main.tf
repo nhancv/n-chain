@@ -71,14 +71,35 @@ resource "aws_security_group" "http_public" {
   }
 }
 
-resource "aws_security_group" "project_private" {
-  name        = "${var.env}-${var.project}-project-3000-private"
+resource "aws_security_group" "project_ethernal" {
+  name        = "${var.env}-${var.project}-project-ethernal"
   description = "Allow HTTP inbound traffic"
   vpc_id      = var.vpc_id
 
   ingress {
     from_port       = 8888
     to_port         = 8888
+    protocol        = "tcp"
+    security_groups = [aws_security_group.http_public.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+}
+
+resource "aws_security_group" "project_blockscout" {
+  name        = "${var.env}-${var.project}-project-blockscout"
+  description = "Allow HTTP inbound traffic"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port       = 80
+    to_port         = 80
     protocol        = "tcp"
     security_groups = [aws_security_group.http_public.id]
   }

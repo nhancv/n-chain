@@ -41,6 +41,13 @@ module "explore_acm_cert" {
   source         = "./modules/acm_cert"
   domain_zone_id = var.domain_zone_id
   domain_name    = var.domain_explore
+  subject_alternative_names = ["app.${var.domain_explore}"]
+}
+
+module "blockscout_acm_cert" {
+  source         = "./modules/acm_cert"
+  domain_zone_id = var.domain_zone_id
+  domain_name    = var.domain_blockscout
 }
 
 module "networking" {
@@ -80,29 +87,29 @@ resource "aws_key_pair" "project" {
 }
 
 module "compute_bastion" {
-  env                 = var.env
-  project             = var.project
-  source              = "./modules/compute_bastion"
-  subnets_app         = tolist(module.networking.subnet_public)
+  env           = var.env
+  project       = var.project
+  source        = "./modules/compute_bastion"
+  subnets_app = tolist(module.networking.subnet_public)
   security_groups_app = [module.security_group.sg_ssh_public]
-  access_key_id       = aws_key_pair.bastion.id
-  instance_conf       = var.instance_type_bastion
+  access_key_id = aws_key_pair.bastion.id
+  instance_conf = var.instance_type_bastion
 }
 
 module "compute_ethernal" {
   depends_on = [module.explore_acm_cert.certificate_validation]
 
-  env                 = var.env
-  project             = var.project
-  source              = "./modules/compute_ethernal"
-  vpc_id              = module.networking.vpc_id
-  subnets_app         = tolist(module.networking.subnet_project)
-  subnets_lb          = tolist(module.networking.subnet_public)
+  env     = var.env
+  project = var.project
+  source  = "./modules/compute_ethernal"
+  vpc_id  = module.networking.vpc_id
+  subnets_app = tolist(module.networking.subnet_project)
+  subnets_lb = tolist(module.networking.subnet_public)
   security_groups_app = [
     module.security_group.sg_ssh_private,
-    module.security_group.sg_project_private,
+    module.security_group.sg_project_ethernal,
   ]
-  security_groups_lb  = [
+  security_groups_lb = [
     module.security_group.sg_http_public,
   ]
   access_key_id       = aws_key_pair.project.id
@@ -114,12 +121,38 @@ module "compute_ethernal" {
   ethernal_password   = var.ethernal_password
 }
 
+module "compute_blockscout" {
+  depends_on = [module.blockscout_acm_cert.certificate_validation]
+
+  env     = var.env
+  project = var.project
+  source  = "./modules/compute_blockscout"
+  vpc_id  = module.networking.vpc_id
+  subnets_app = tolist(module.networking.subnet_project)
+  subnets_lb = tolist(module.networking.subnet_public)
+  security_groups_app = [
+    module.security_group.sg_ssh_private,
+    module.security_group.sg_project_blockscout,
+  ]
+  security_groups_lb = [
+    module.security_group.sg_http_public,
+  ]
+  access_key_id          = aws_key_pair.project.id
+  instance_conf          = var.instance_type_project
+  domain_zone_id         = var.domain_zone_id
+  domain_blockscout      = var.domain_blockscout
+  domain_blockscout_cert = module.blockscout_acm_cert.cert
+  blockscout_rpc         = var.blockscout_rpc
+  blockscout_chainid     = var.blockscout_chainid
+}
+
 module "sns" {
   env          = var.env
   project      = var.project
   source       = "./modules/sns"
   sns_endpoint = var.sns_endpoint
-  group_names  = [
+  group_names = [
     module.compute_ethernal.compute_name,
+    module.compute_blockscout.compute_name,
   ]
 }

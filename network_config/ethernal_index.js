@@ -7,8 +7,8 @@ const API_ROOT = 'http://localhost:8888'; // DO NOT CHANGE
 const EXPLORER_DOMAIN = 'nhancv.com'; // CHANGE: <--- All explorers will be created under this domain
 const EXPLORER_SLUG = 'scan'; // CHANGE: <--- This will be used for the subdomain. Change to your subdomain
 const RPC_SERVER = 'https://rpc.nhancv.com'; // CHANGE: <--- YOUR RPC SERVER
-const NETWORK_ID = 1337; // CHANGE: <--- YOUR NETWORK ID
-const NETWORK_TOKEN = 'ETH'; // CHANGE: <--- YOUR NETWORK SYMBOL
+const NETWORK_ID = 1584821; // CHANGE: <--- YOUR NETWORK CHAIN_ID
+const NETWORK_TOKEN = 'ETH'; // CHANGE: <--- YOUR NETWORK CHAIN_SYMBOL
 const SECRET = 'xxx'; // CHANGE: <--- Secret that you defined in your .env.prod file
 
 const THEME = {"default":{}};

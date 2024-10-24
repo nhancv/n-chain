@@ -20,9 +20,9 @@ data "aws_ami" "ubuntu" {
 ## ALB PROJECT
 ###########
 # This alb places at public subnet and forward traffic internet to project subnet
-resource "aws_lb" "explorer" {
-  #  name               = "${var.env}-${var.project}-explorer-${substr(uuid(), 0, 3)}"
-  name               = "${var.env}-${var.project}-explorer"
+resource "aws_lb" "blockscout" {
+  #  name               = "${var.env}-${var.project}-blockscout-${substr(uuid(), 0, 3)}"
+  name               = "${var.env}-${var.project}-blockscout"
   internal           = false
   load_balancer_type = "application"
   security_groups    = var.security_groups_lb
@@ -33,18 +33,18 @@ resource "aws_lb" "explorer" {
   }
 }
 
-resource "aws_lb_target_group" "explorer" {
-  #  name     = "${var.env}-${var.project}-explorer-${substr(uuid(), 0, 3)}"
-  name     = "${var.env}-${var.project}-explorer"
+resource "aws_lb_target_group" "blockscout" {
+  # name     = "${var.env}-${var.project}-blockscout-${substr(uuid(), 0, 3)}"
+  name     = "${var.env}-${var.project}-blockscout"
   vpc_id   = var.vpc_id
   protocol = "HTTP"
-  port     = "8888"
+  port     = "80"
   lifecycle {
     create_before_destroy = true
     #ignore_changes        = [name]
   }
   health_check {
-    port                = 8888
+    port                = 80
     protocol            = "HTTP"
     path                = "/"
     matcher             = "200,202,404"
@@ -62,27 +62,27 @@ resource "aws_lb_target_group" "explorer" {
 
 ### CONFIG LOAD BALANCER WITH SSL/HTTPS ###
 # Requires certificate_arn which created by ACM
-resource "aws_lb_listener" "explorer_https" {
+resource "aws_lb_listener" "blockscout_https" {
   depends_on = [
-    aws_lb.explorer,
-    aws_lb_target_group.explorer
+    aws_lb.blockscout,
+    aws_lb_target_group.blockscout
   ]
 
-  load_balancer_arn = aws_lb.explorer.arn
+  load_balancer_arn = aws_lb.blockscout.arn
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = var.domain_explore_cert
+  certificate_arn   = var.domain_blockscout_cert
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.explorer.arn
+    target_group_arn = aws_lb_target_group.blockscout.arn
   }
 }
-resource "aws_lb_listener" "explorer_http" {
-  depends_on = [aws_lb.explorer]
+resource "aws_lb_listener" "blockscout_http" {
+  depends_on = [aws_lb.blockscout]
 
-  load_balancer_arn = aws_lb.explorer.arn
+  load_balancer_arn = aws_lb.blockscout.arn
   port              = "80"
   protocol          = "HTTP"
 
@@ -97,50 +97,37 @@ resource "aws_lb_listener" "explorer_http" {
   }
 }
 # Register domain
-resource "aws_route53_record" "lb_explorer_record" {
-  depends_on = [aws_lb.explorer, aws_lb_listener.explorer_https]
+resource "aws_route53_record" "lb_blockscout_record" {
+  depends_on = [aws_lb.blockscout, aws_lb_listener.blockscout_https]
 
   zone_id = var.domain_zone_id
-  name    = var.domain_explore
+  name    = var.domain_blockscout
   type    = "A"
 
   alias {
-    name                   = aws_lb.explorer.dns_name
-    zone_id                = aws_lb.explorer.zone_id
-    evaluate_target_health = true
-  }
-}
-resource "aws_route53_record" "ethernal_app_record" {
-  depends_on = [aws_lb.explorer, aws_lb_listener.explorer_https]
-
-  zone_id = var.domain_zone_id
-  name    = "app.${var.domain_explore}"
-  type    = "A"
-
-  alias {
-    name                   = aws_lb.explorer.dns_name
-    zone_id                = aws_lb.explorer.zone_id
+    name                   = aws_lb.blockscout.dns_name
+    zone_id                = aws_lb.blockscout.zone_id
     evaluate_target_health = true
   }
 }
 
 ### CONFIG LOAD BALANCER WITHOUT SSL/HTTPS ###
-#resource "aws_lb_listener" "explorer_http" {
-#  load_balancer_arn = aws_lb.explorer.arn
+#resource "aws_lb_listener" "blockscout_http" {
+#  load_balancer_arn = aws_lb.blockscout.arn
 #  port              = "80"
 #  protocol          = "HTTP"
 #
 #  default_action {
 #    type             = "forward"
-#    target_group_arn = aws_lb_target_group.explorer.arn
+#    target_group_arn = aws_lb_target_group.blockscout.arn
 #  }
 #}
 
 ###########
 ## APP PROJECT
 ###########
-resource "aws_iam_role" "explorer" {
-  name = "${var.env}-${var.project}-iam-role-explorer"
+resource "aws_iam_role" "blockscout" {
+  name = "${var.env}-${var.project}-iam-role-blockscout"
 
   assume_role_policy = <<EOF
 {
@@ -159,12 +146,12 @@ resource "aws_iam_role" "explorer" {
 EOF
 
   tags = {
-    tag-key = "${var.env}-${var.project}-explorer"
+    tag-key = "${var.env}-${var.project}-blockscout"
   }
 }
-resource "aws_iam_role_policy" "explorer" {
-  name = "${var.env}-${var.project}-iam-role-pl-explorer"
-  role = aws_iam_role.explorer.id
+resource "aws_iam_role_policy" "blockscout" {
+  name = "${var.env}-${var.project}-iam-role-pl-blockscout"
+  role = aws_iam_role.blockscout.id
 
   policy = <<EOF
 {
@@ -199,30 +186,31 @@ EOF
 
 }
 
-resource "aws_iam_instance_profile" "explorer" {
-  name = "${var.env}-${var.project}-iam-profile-explorer"
-  role = aws_iam_role.explorer.name
+resource "aws_iam_instance_profile" "blockscout" {
+  name = "${var.env}-${var.project}-iam-profile-blockscout"
+  role = aws_iam_role.blockscout.name
   lifecycle {
     create_before_destroy = true
     #ignore_changes        = [name]
   }
 }
 
-resource "aws_launch_template" "explorer" {
-  name                   = "${var.env}-${var.project}-explorer"
+resource "aws_launch_template" "blockscout" {
+  name                   = "${var.env}-${var.project}-blockscout"
   image_id               = data.aws_ami.ubuntu.id
   instance_type          = var.instance_conf.type
   vpc_security_group_ids = var.security_groups_app
   key_name               = var.access_key_id
   update_default_version = true
-  user_data = base64encode(templatefile("scripts/ethernal.sh", {
-    ENV               = var.env
-    ETHERNAL_USER     = var.ethernal_user
-    ETHERNAL_PASSWORD = var.ethernal_password
+  user_data = base64encode(templatefile("scripts/blockscout.sh", {
+    ENV                = var.env
+    BLOCKSCOUT_RPC     = var.blockscout_rpc
+    BLOCKSCOUT_CHAINID = var.blockscout_chainid
+    BLOCKSCOUT_URL     = var.domain_blockscout
   }))
 
   iam_instance_profile {
-    name = aws_iam_instance_profile.explorer.name
+    name = aws_iam_instance_profile.blockscout.name
   }
 
   monitoring {
@@ -240,17 +228,17 @@ resource "aws_launch_template" "explorer" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = "${var.env}-${var.project}-explorer"
+      Name = "${var.env}-${var.project}-blockscout"
     }
   }
 
   tags = {
-    Name = "${var.env}-${var.project}-lt-explorer"
+    Name = "${var.env}-${var.project}-lt-blockscout"
   }
 }
 
-resource "aws_autoscaling_group" "explorer" {
-  name                = "${var.env}-${var.project}-explorer"
+resource "aws_autoscaling_group" "blockscout" {
+  name                = "${var.env}-${var.project}-blockscout"
   vpc_zone_identifier = var.subnets_app
   min_size            = var.instance_conf.min_size
   max_size            = var.instance_conf.max_size
@@ -265,13 +253,13 @@ resource "aws_autoscaling_group" "explorer" {
     "GroupTotalInstances"
   ]
   metrics_granularity = "1Minute"
-  target_group_arns = [aws_lb_target_group.explorer.arn]
+  target_group_arns = [aws_lb_target_group.blockscout.arn]
   lifecycle {
     create_before_destroy = true
   }
 
   launch_template {
-    id      = aws_launch_template.explorer.id
+    id      = aws_launch_template.blockscout.id
     version = "$Latest"
   }
 

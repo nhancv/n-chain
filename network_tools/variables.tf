@@ -57,3 +57,6 @@ variable "domain_zone_id" {}
 variable "domain_explore" { default = "scan.nhancv.com" }
 variable "ethernal_user" { default = "me@nhancv.com" }
 variable "ethernal_password" { default = "secret" }
+variable "domain_blockscout" { default = "blockscout.nhancv.com" }
+variable "blockscout_rpc" { default = "https://rpc.nhancv.com" }
+variable "blockscout_chainid" { default = "1584821" }

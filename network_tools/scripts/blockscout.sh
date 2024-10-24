@@ -27,11 +27,6 @@ export BLOCKSCOUT_RPC="$BLOCKSCOUT_RPC"
 export BLOCKSCOUT_CHAINID="$BLOCKSCOUT_CHAINID"
 export BLOCKSCOUT_URL="$BLOCKSCOUT_URL"
 
-# Extract the protocol
-RPC_PROTOCOL=$(echo $BLOCKSCOUT_RPC | sed -E 's|^(https?)://.*|\1|')
-# Extract the host
-RPC_HOST=$(echo $BLOCKSCOUT_RPC | sed -E 's|^https?://([^/]+).*|\1|')
-
 # Clone source
 REPO_URL="https://github.com/nhancv/blockscout.git"
 REPO_DIR=".blockscout_all"

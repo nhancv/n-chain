@@ -33,7 +33,7 @@ RPC_PROTOCOL=$(echo $BLOCKSCOUT_RPC | sed -E 's|^(https?)://.*|\1|')
 RPC_HOST=$(echo $BLOCKSCOUT_RPC | sed -E 's|^https?://([^/]+).*|\1|')
 
 # Clone source
-REPO_URL="https://github.com/blockscout/blockscout.git"
+REPO_URL="https://github.com/nhancv/blockscout.git"
 REPO_DIR=".blockscout_all"
 git clone "$REPO_URL" $REPO_DIR
 cd $REPO_DIR/docker-compose
@@ -63,6 +63,8 @@ sed -i "s|NEXT_PUBLIC_API_PROTOCOL=http|NEXT_PUBLIC_API_PROTOCOL=https|g" $FRONT
 sed -i "s|NEXT_PUBLIC_APP_HOST=localhost|NEXT_PUBLIC_APP_HOST=${BLOCKSCOUT_URL}|g" $FRONTEND_CONFIG
 sed -i "s|NEXT_PUBLIC_APP_PROTOCOL=http|NEXT_PUBLIC_APP_PROTOCOL=https|g" $FRONTEND_CONFIG
 sed -i "s|NEXT_PUBLIC_API_WEBSOCKET_PROTOCOL=ws|NEXT_PUBLIC_API_WEBSOCKET_PROTOCOL=wss|g" $FRONTEND_CONFIG
+sed -i "s|NEXT_PUBLIC_STATS_API_HOST=http://localhost:8080|NEXT_PUBLIC_STATS_API_HOST=https://${BLOCKSCOUT_URL}:8080|g" $FRONTEND_CONFIG
+sed -i "s|NEXT_PUBLIC_VISUALIZE_API_HOST=http://localhost:8081|NEXT_PUBLIC_VISUALIZE_API_HOST=https://${BLOCKSCOUT_URL}:8081|g" $FRONTEND_CONFIG
 printf '\nNEXT_PUBLIC_AD_BANNER_PROVIDER=none' >> $FRONTEND_CONFIG
 printf '\nNEXT_PUBLIC_AD_TEXT_PROVIDER=none' >> $FRONTEND_CONFIG
 

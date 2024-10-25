@@ -129,6 +129,7 @@ networkFiles/
     + Once the `networkFiles` folder is generated, you can find the public key of each node in the `networkFiles/keys/[wallet-node-1]/key.pub`.
     + Copy it without the initial `0x` and update to `NODE_1_KEY_PUB` in the `nodeconf.toml` file.
     + Do the same for the other nodes.
+    + Learn more about config file: https://besu.hyperledger.org/development/public-networks/reference/cli/options#config-file
 
 - Upload some config files in `network_config/` folder to `AWS Secrets Manager` as `Plaintext`:
     + `nodeconf.toml` file to AWS with name `testnet-nchaincore-nodeconf`

@@ -59,7 +59,56 @@ resource "aws_lb_target_group" "blockscout" {
     cookie_duration = 86400
   }
 }
-
+resource "aws_lb_target_group" "blockscout_stats" {
+  name     = "${var.env}-${var.project}-blockscout2"
+  vpc_id   = var.vpc_id
+  protocol = "HTTP"
+  port     = "8080"
+  lifecycle {
+    create_before_destroy = true
+    #ignore_changes        = [name]
+  }
+  health_check {
+    port                = 8080
+    protocol            = "HTTP"
+    path                = "/"
+    matcher             = "200,202,404"
+    timeout             = 20
+    healthy_threshold   = 2
+    unhealthy_threshold = 10
+    interval            = 30
+  }
+  stickiness {
+    enabled         = true
+    type            = "lb_cookie"
+    cookie_duration = 86400
+  }
+}
+resource "aws_lb_target_group" "blockscout_visualize" {
+  name     = "${var.env}-${var.project}-blockscout3"
+  vpc_id   = var.vpc_id
+  protocol = "HTTP"
+  port     = "8081"
+  lifecycle {
+    create_before_destroy = true
+    #ignore_changes        = [name]
+  }
+  health_check {
+    port                = 8081
+    protocol            = "HTTP"
+    path                = "/"
+    matcher             = "200,202,404"
+    timeout             = 20
+    healthy_threshold   = 2
+    unhealthy_threshold = 10
+    interval            = 30
+  }
+  stickiness {
+    enabled         = true
+    type            = "lb_cookie"
+    cookie_duration = 86400
+  }
+}
 ### CONFIG LOAD BALANCER WITH SSL/HTTPS ###
 # Requires certificate_arn which created by ACM
 resource "aws_lb_listener" "blockscout_https" {
@@ -96,9 +145,46 @@ resource "aws_lb_listener" "blockscout_http" {
     }
   }
 }
+resource "aws_lb_listener" "blockscout_https_stats" {
+  depends_on = [
+    aws_lb.blockscout,
+    aws_lb_target_group.blockscout_stats
+  ]
+
+  load_balancer_arn = aws_lb.blockscout.arn
+  port              = "8080"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.domain_blockscout_cert
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.blockscout_stats.arn
+  }
+}
+resource "aws_lb_listener" "blockscout_https_visualize" {
+  depends_on = [
+    aws_lb.blockscout,
+    aws_lb_target_group.blockscout_visualize
+  ]
+
+  load_balancer_arn = aws_lb.blockscout.arn
+  port              = "8081"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.domain_blockscout_cert
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.blockscout_visualize.arn
+  }
+}
 # Register domain
 resource "aws_route53_record" "lb_blockscout_record" {
-  depends_on = [aws_lb.blockscout, aws_lb_listener.blockscout_https]
+  depends_on = [
+    aws_lb.blockscout, aws_lb_listener.blockscout_https, aws_lb_listener.blockscout_https_stats,
+    aws_lb_listener.blockscout_https_visualize
+  ]
 
   zone_id = var.domain_zone_id
   name    = var.domain_blockscout
@@ -203,10 +289,11 @@ resource "aws_launch_template" "blockscout" {
   key_name               = var.access_key_id
   update_default_version = true
   user_data = base64encode(templatefile("scripts/blockscout.sh", {
-    ENV                = var.env
-    BLOCKSCOUT_RPC     = var.blockscout_rpc
-    BLOCKSCOUT_CHAINID = var.blockscout_chainid
-    BLOCKSCOUT_URL     = var.domain_blockscout
+    ENV                 = var.env
+    BLOCKSCOUT_RPC      = var.blockscout_rpc
+    BLOCKSCOUT_CHAINID  = var.blockscout_chainid
+    BLOCKSCOUT_URL      = var.domain_blockscout
+    BLOCKSCOUT_PROTOCOL = "https"
   }))
 
   iam_instance_profile {
@@ -253,7 +340,10 @@ resource "aws_autoscaling_group" "blockscout" {
     "GroupTotalInstances"
   ]
   metrics_granularity = "1Minute"
-  target_group_arns = [aws_lb_target_group.blockscout.arn]
+  target_group_arns = [
+    aws_lb_target_group.blockscout.arn, aws_lb_target_group.blockscout_stats.arn,
+    aws_lb_target_group.blockscout_visualize.arn
+  ]
   lifecycle {
     create_before_destroy = true
   }

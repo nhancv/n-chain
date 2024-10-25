@@ -1,13 +1,13 @@
 # N Chain
 
-Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal to AWS Cloud via Terraform
+Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal, Blockscout to AWS Cloud via Terraform
 
 ![route53](./arch/aws_arch.png)
 
 ## Network configuration
 - Ethereum Client: Besu
 - Ethereum Stats: Ethstats
-- Ethereum Explorer: Ethernal
+- Ethereum Explorer: Ethernal & Blockscout
 - Concensus: IBFT2.0
 - Deploy environment: AWS Cloud via Terraform
 - Gas price: 1000 Wei (0.000001 GWei) (default)
@@ -34,7 +34,7 @@ Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal t
 - 102 resources estimated cost: $424
 - Read more at [network_core/README.md](./network_core/README.md)
 
-## Setup Blockchain Explorer with Ethernal
+## Setup Blockchain Explorer with Ethernal and Blockscout
 
 - 46 resources estimated cost: $97
 - Read more at [network_tools/README.md](./network_tools/README.md)
@@ -55,6 +55,10 @@ Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal t
 - Stastics: https://stats.nhancv.com
   ![stats](./arch/demo/stats.png)
 
-- Explorer: https://scan.nhancv.com
+- Ethernal explorer: https://scan.nhancv.com
   ![explorer](./arch/demo/scan_overview.png)
   ![explorer](./arch/demo/scan_tx.png)
+
+- Blockscout explorer: https://blockscout.nhancv.com
+  ![blockscout](./arch/demo/blockscout.png)
+  ![blockscout](./arch/demo/blockscout_stats.png)

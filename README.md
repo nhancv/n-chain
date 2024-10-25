@@ -31,12 +31,12 @@ Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal, 
 
 ## Setup Blockchain Network Core & Stats monitor
 
-- 102 resources estimated cost: $424
+- 102 resources estimated cost: $450
 - Read more at [network_core/README.md](./network_core/README.md)
 
 ## Setup Blockchain Explorer with Ethernal and Blockscout
 
-- 46 resources estimated cost: $97
+- 46 resources estimated cost: $140
 - Read more at [network_tools/README.md](./network_tools/README.md)
 
 ## Demo

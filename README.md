@@ -8,20 +8,39 @@ Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal, 
 - Ethereum Client: Besu
 - Ethereum Stats: Ethstats
 - Ethereum Explorer: Ethernal & Blockscout
-- Concensus: IBFT2.0
+- Consensus: IBFT2.0
 - Deploy environment: AWS Cloud via Terraform
 - Gas price: 1000 Wei (0.000001 GWei) (default)
 - Gas limit: 30M
 - Ethereum client: besu
 - Block time: 1s (minimum)
-- Block size: ~0.6KB
+- Block size: ~1KB
 
-### Hardware recommendation
+### Hardware recommendation for testing
 - AWS instance type: >= t3.medium
 - Processor: x86-64 bit 2-4+ cores
 - Memory: 4-8 GB
 - Storage:  50-100GB
 - Operating System: Linux (Ubuntu 20.04)
+
+### Calculate minimum DISK Size Growing
+- Basic transfer native coin (ETH) is a fixed cost of **21,000 gas**
+- An ETH transfer transaction typically uses **about 109 bytes** of data. Here’s a breakdown of how these bytes are used:
+  1. **Nonce (8 bytes)**: Unique identifier for the transaction from a specific sender to prevent double-spending and to keep transactions in order.
+  2. **Gas Price (16 bytes)**: The amount of ETH the sender is willing to pay per unit of gas.
+  3. **Gas Limit (8 bytes)**: The maximum amount of gas the sender allows for this transaction (for an ETH transfer, this is set to 21,000).
+  4. **To Address (20 bytes)**: The recipient’s address.
+  5. **Value (32 bytes)**: The amount of ETH to transfer, stored as a 256-bit value.
+  6. **Data (0 bytes)**: Since an ETH transfer is a simple transaction, it does not include additional data.
+  7. **V, R, S (65 bytes total)**: The cryptographic signature fields used to validate the transaction, which include recovery id (V), and the signature (R and S values).
+- Assume 1 tx in a block ⇒ Block size:
+  - Block Header: 500 - 600 bytes
+  - Transaction Data: 109 bytes for basic transfer
+  - Transaction Receipt: 80 - 100 bytes for basic transfer
+  - Total: 600+109+100=809 bytes ~ 1KB ceil rounded
+- **Estimation for 10 years:**
+  - Total blocks in 10 years (Block time = 1 second): 10 * 365 * 24 * 60 * 60 = 315,360,000 blocks
+  - Minimum total size = 1 KB * 315360000 = 315.4 GB
 
 ## Requirements
 

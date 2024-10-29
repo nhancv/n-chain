@@ -294,6 +294,7 @@ resource "aws_launch_template" "blockscout" {
     BLOCKSCOUT_CHAINID  = var.blockscout_chainid
     BLOCKSCOUT_URL      = var.domain_blockscout
     BLOCKSCOUT_PROTOCOL = "https"
+    BLOCKSCOUT_PROTOCOL_WS = "wss"
   }))
 
   iam_instance_profile {

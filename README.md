@@ -81,3 +81,8 @@ Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal, 
 - Blockscout explorer: https://blockscout.nhancv.com
   ![blockscout](./arch/demo/blockscout.png)
   ![blockscout](./arch/demo/blockscout_stats.png)
+
+
+## Others
+
+- EVM Chain CometBFT PoS with Evmos: https://github.com/nhancv/nchain.evmos

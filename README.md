@@ -48,15 +48,11 @@ Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal, 
 - Domain: Namecheap -> Point DNS Nameservers to AWS Route 53. Ex: `nhancv.com`
 - Terraform account
 
-## Setup Blockchain Network Core & Stats monitor
+## Setup Blockchain 
 
-- 102 resources estimated cost: $450
-- Read more at [network_core/README.md](./network_core/README.md)
-
-## Setup Blockchain Explorer with Ethernal and Blockscout
-
-- 46 resources estimated cost: $140
-- Read more at [network_tools/README.md](./network_tools/README.md)
+- Network Core & Stats monitor: [network_core/README.md](./network_core/README.md)
+- Blockchain Explorer with Ethernal and Blockscout: [network_tools/README.md](./network_tools/README.md)
+- Cost estimation: ~$32/day 
 
 ## Demo
 

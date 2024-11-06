@@ -52,7 +52,7 @@ Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal, 
 
 - Network Core & Stats monitor: [network_core/README.md](./network_core/README.md)
 - Blockchain Explorer with Ethernal and Blockscout: [network_tools/README.md](./network_tools/README.md)
-- Cost estimation: ~$32/day 
+- AWS cost estimation: ~$32/day for full services and ~$21/day without Ethernal and Ethstats 
 
 ## Demo
 

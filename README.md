@@ -1,4 +1,4 @@
-# N Chain
+# nchain.poa
 
 Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal, Blockscout to AWS Cloud via Terraform
 
@@ -52,7 +52,7 @@ Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal, 
 
 - Network Core & Stats monitor: [network_core/README.md](./network_core/README.md)
 - Blockchain Explorer with Ethernal and Blockscout: [network_tools/README.md](./network_tools/README.md)
-- AWS cost estimation: ~$32/day for full services and ~$21/day without Ethernal and Ethstats 
+- AWS cost estimation: `~$32/day` for full services and `~$21/day` without Ethernal and Ethstats 
 
 ## Demo
 
@@ -72,11 +72,11 @@ Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal, 
 
 - Ethernal explorer: https://scan.nhancv.com
   ![explorer](./arch/demo/scan_overview.png)
-  ![explorer](./arch/demo/scan_tx.png)
+  ![explorer_tx_detail](./arch/demo/scan_tx.png)
 
 - Blockscout explorer: https://blockscout.nhancv.com
   ![blockscout](./arch/demo/blockscout.png)
-  ![blockscout](./arch/demo/blockscout_stats.png)
+  ![blockscout_stats](./arch/demo/blockscout_stats.png)
 
 
 ## Others

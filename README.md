@@ -81,4 +81,4 @@ Deploy IBFT Ethereum Private Network with Hyperledger Besu, Ethstats, Ethernal, 
 
 ## Others
 
-- EVM Chain CometBFT PoS with Evmos: https://github.com/nhancv/nchain.evmos
+- EVM Chain CometBFT PoS with Evmos: https://github.com/nhancv/nchain.pos

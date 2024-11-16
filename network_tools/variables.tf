@@ -44,7 +44,7 @@ variable "instance_type_project" {
 }
 
 # SNS Emails
-variable "sns_endpoint" { default = "nhancv@google.com" }
+variable "sns_endpoint" { default = "me@nhancv.com" }
 
 ### AWS CREDENTIALS CONFIG ON CLOUD ###
 variable "AWS_REGION" { default = "us-east-1" }

@@ -1,5 +1,7 @@
 # Network Tools
 
+Note: Blockchain need to be setup on AMD64 instance.
+
 ## Terraform cloud
 
 - Register: https://app.terraform.io

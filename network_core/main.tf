@@ -126,7 +126,7 @@ module "compute_stats" {
 module "alb_rpc" {
   env             = var.env
   project         = var.project
-  source          = "modules/alb_public_rpc"
+  source          = "./modules/alb_rpc"
   vpc_id          = module.networking.vpc_id
   subnets         = tolist(module.networking.subnet_public)
   security_groups = [module.security_group.sg_http_public]
